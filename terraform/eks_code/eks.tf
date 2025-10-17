@@ -30,8 +30,8 @@ module "eks" {
       max_size     = 4
       desired_size = 2
 
-      instance_types = ["t3.medium"]
-      capacity_type  = "SPOT"
+      instance_types = ["t3.small"]   # 2 vCPU, 2 GB RAM
+      capacity_type  = "ON_DEMAND"    
 
       tags = {
         ExtraTag = "Worker_Node"

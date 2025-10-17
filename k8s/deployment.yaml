@@ -2,22 +2,41 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pandacloud-app
+  name: amazon-prime-app
   labels:
-    app: pandacloud-app
+    app: amazon-prime-app
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
-      app: pandacloud-app
+      app: amazon-prime-app
   template:
     metadata:
       labels:
-        app: pandacloud-app
+        app: amazon-prime-app
     spec:
       containers:
-      - name: pandacloud-container
-        image: 309395755719.dkr.ecr.us-east-1.amazonaws.com/amazon-prime:latest
+      - name: amazon-prime-container
+        image: 294568841304.dkr.ecr.us-east-1.amazonaws.com/amazon-clone-k8s-eks-argocd:latest
         ports:
         - containerPort: 3000
-...
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+---

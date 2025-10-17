@@ -13,9 +13,15 @@ pipeline {
         stage("Login to EKS") {
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'access-key', variable: 'AWS_ACCESS_KEY'),
-                                     string(credentialsId: 'secret-key', variable: 'AWS_SECRET_KEY')]) {
-                        sh "aws eks --region us-east-1 update-kubeconfig --name ${params.CLUSTER_NAME}"
+                    withCredentials([
+                        string(credentialsId: 'aws-access-key', variable: 'AWS_ACCESS_KEY'),
+                        string(credentialsId: 'aws-secret-key', variable: 'AWS_SECRET_KEY')
+                    ]) {
+                        sh """
+                        export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY}
+                        export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_KEY}
+                        aws eks --region us-east-1 update-kubeconfig --name ${params.CLUSTER_NAME}
+                        """
                     }
                 }
             }
@@ -27,6 +33,8 @@ pipeline {
                     sh """
                     helm repo add stable https://charts.helm.sh/stable || true
                     helm repo add prometheus-community https://prometheus-community.github.io/helm-charts || true
+                    helm repo update
+                    
                     # Check if namespace 'prometheus' exists
                     if kubectl get namespace prometheus > /dev/null 2>&1; then
                         # If namespace exists, upgrade the Helm release
@@ -36,6 +44,7 @@ pipeline {
                         kubectl create namespace prometheus
                         helm install stable prometheus-community/kube-prometheus-stack -n prometheus
                     fi
+                    
                     kubectl patch svc stable-kube-prometheus-sta-prometheus -n prometheus -p '{"spec": {"type": "LoadBalancer"}}'
                     kubectl patch svc stable-grafana -n prometheus -p '{"spec": {"type": "LoadBalancer"}}'
                     """
@@ -55,6 +64,5 @@ pipeline {
                 }
             }
         }
-		
     }
 }
