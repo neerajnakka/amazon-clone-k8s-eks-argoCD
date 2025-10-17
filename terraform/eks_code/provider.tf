@@ -1,3 +1,15 @@
+terraform {
+  required_version = ">= 1.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"  # Pin to version 5.x (NOT 6.x)
+    }
+  }
+}
+
+
 locals {
   region = "us-east-1"
   name   = "amazon-prime-cluster"
@@ -10,6 +22,7 @@ locals {
     Example = local.name
   }
 }
+
 
 provider "aws" {
   region = "us-east-1"
