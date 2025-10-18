@@ -10,7 +10,7 @@ pipeline {
     // Parameters allow users to provide input when triggering the build
     parameters {
         string(name: 'ECR_REPO_NAME', defaultValue: 'amazon-clone-k8s-eks-argocd', description: 'Enter the ECR Repository name')
-        string(name: 'AWS_ACCOUNT_ID', defaultValue: '', description: 'Enter your AWS Account ID (12-digit number)')
+        string(name: 'AWS_ACCOUNT_ID', defaultValue: '294568841304', description: 'Enter your AWS Account ID (12-digit number)')
     }
     
     // Environment variables accessible across all stages
