@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    
+
     // Define tools that Jenkins should auto-install and make available
     tools {
         jdk 'jdk'           // Java Development Kit for building
